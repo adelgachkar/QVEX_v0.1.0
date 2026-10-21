@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for Restless Calibration Node (QVEX v0.1.0)
 """
 

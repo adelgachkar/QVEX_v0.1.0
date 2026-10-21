@@ -1,4 +1,4 @@
-﻿"""
+"""
 QVEX Nodes package: Exposes all computational and physics nodes.
 """
 
