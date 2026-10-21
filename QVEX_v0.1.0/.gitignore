@@ -12,3 +12,6 @@ env/
 
 _deprecated_qvex/
 .obsidian/workspace.json
+
+outputs/
+*.zip
