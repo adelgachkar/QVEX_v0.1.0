@@ -1,0 +1,83 @@
+{
+  "version": "0.1.0",
+  "description": "QVEX Multi-Cavity Coupled Pipeline with Dynamic Inter-Cavity Coupler and Stress Integration",
+  "nodes": {
+    "cavity_1": {
+      "type": "cavity_resonator",
+      "params": {
+        "damping": 1.0,
+        "coupling": 1.0,
+        "frequency_ghz": 6.5,
+        "q_factor": 1e5
+      }
+    },
+    "cavity_2": {
+      "type": "cavity_resonator",
+      "params": {
+        "damping": 0.8,
+        "coupling": 1.2,
+        "frequency_ghz": 6.8,
+        "q_factor": 1e5
+      }
+    },
+    "coupler": {
+      "type": "dynamic_inter_cavity_coupler",
+      "params": {
+        "coupling_strength": 0.45,
+        "detuning_tolerance": 0.05
+      }
+    },
+    "pump": {
+      "type": "peristaltic_pump",
+      "params": {
+        "gain": 1.0
+      }
+    },
+    "stress": {
+      "type": "boundary_stress_integrator",
+      "params": {
+        "area": 2.0,
+        "topological_deficit_delta5_rad": 0.1284
+      }
+    },
+    "metric": {
+      "type": "effective_metric_source",
+      "params": {
+        "scale": 1.0,
+        "radial_distance": 1.0
+      }
+    }
+  },
+  "edges": [
+    {
+      "from_node": "cavity_1",
+      "from_port": "cavity_intensity",
+      "to_node": "coupler",
+      "to_port": "cavity_1_field"
+    },
+    {
+      "from_node": "cavity_2",
+      "from_port": "cavity_intensity",
+      "to_node": "coupler",
+      "to_port": "cavity_2_field"
+    },
+    {
+      "from_node": "coupler",
+      "from_port": "transfer_efficiency_est",
+      "to_node": "pump",
+      "to_port": "amplitude"
+    },
+    {
+      "from_node": "pump",
+      "from_port": "pump_thrust",
+      "to_node": "stress",
+      "to_port": "jet_power"
+    },
+    {
+      "from_node": "stress",
+      "from_port": "stress_tensor_4x4",
+      "to_node": "metric",
+      "to_port": "stress_tensor_4x4"
+    }
+  ]
+}
