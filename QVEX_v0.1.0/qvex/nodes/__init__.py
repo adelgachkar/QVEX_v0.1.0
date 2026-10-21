@@ -1,54 +1,51 @@
-"""
-QVEX Nodes Package.
-Exports all processing and physics nodes for the QVEX DAG pipeline.
+﻿"""
+QVEX Nodes package: Exposes all computational and physics nodes.
 """
 
-from .base import Node, BaseNode, PassthroughNode, PlaceholderNode
-
-# Physics & Scaffold Nodes
-from .cavity_resonator import CavityResonatorNode
-from .non_markovian_cavity import NonMarkovianCavityNode
-from .berry_torque_bridge import BerryTorqueBridgeNode
+from .base import Node
 from .peristaltic_pump import PeristalticPumpNode
-from .boundary_stress_integrator import BoundaryStressIntegratorNode
-from .gravitational_curvature import GravitationalCurvatureNode
-from .effective_metric_source import EffectiveMetricSourceNode
+from .cavity_resonator import CavityResonatorNode
 from .quantum_backreaction import QuantumBackreactionNode
+from .gravitational_curvature import GravitationalCurvatureNode
+from .boundary_stress_integrator import BoundaryStressIntegratorNode
+from .effective_metric_source import EffectiveMetricSourceNode
+from .berry_torque_bridge import BerryTorqueBridgeNode
 from .radial_propagation import RadialPropagationNode
+from .popcorn_vacuum_density import PopcornVacuumDensityNode
+from .observational_coupling import ObservationalCouplingNode
+from .laboratory_benchmarks import LaboratoryBenchmarksNode
 from .optical_phase_step import OpticalPhaseStepNode
+from .non_markovian_cavity import NonMarkovianCavityNode
+from .tetrahedral_relaxation import TetrahedralRelaxationNode
+from .tetrahedral_cluster import TetrahedralClusterNode
 from .z_axis_filter_queue import ZAxisFilterQueueNode
+from .resonant_spinon_zero_mode import ResonantSpinonZeroModeNode
+from .dynamic_inter_cavity_coupler import DynamicInterCavityCouplerNode
 
-# Tetrahedral Cluster and Union
-from .tetrahedral_cluster import TetrahedralClusterNode, FiveTetrahedralUnionNode
-
-# Popcorn Vacuum & Observational Nodes
-from .popcorn_vacuum_density import (
-    PopcornVacuumDensityNode,
-    PopcornVacuumConfig,
-    H0_EARLY_DEFAULT,
-    H0_LOCAL_DEFAULT,
-)
+try:
+    from .restless_calibration import RestlessCalibrationNode
+except ImportError:
+    pass
 
 __all__ = [
     "Node",
-    "BaseNode",
-    "PassthroughNode",
-    "PlaceholderNode",
-    "CavityResonatorNode",
-    "NonMarkovianCavityNode",
-    "BerryTorqueBridgeNode",
     "PeristalticPumpNode",
-    "BoundaryStressIntegratorNode",
-    "GravitationalCurvatureNode",
-    "EffectiveMetricSourceNode",
+    "CavityResonatorNode",
     "QuantumBackreactionNode",
+    "GravitationalCurvatureNode",
+    "BoundaryStressIntegratorNode",
+    "EffectiveMetricSourceNode",
+    "BerryTorqueBridgeNode",
     "RadialPropagationNode",
-    "OpticalPhaseStepNode",
-    "ZAxisFilterQueueNode",
-    "TetrahedralClusterNode",
-    "FiveTetrahedralUnionNode",
     "PopcornVacuumDensityNode",
-    "PopcornVacuumConfig",
-    "H0_EARLY_DEFAULT",
-    "H0_LOCAL_DEFAULT",
+    "ObservationalCouplingNode",
+    "LaboratoryBenchmarksNode",
+    "OpticalPhaseStepNode",
+    "NonMarkovianCavityNode",
+    "TetrahedralRelaxationNode",
+    "TetrahedralClusterNode",
+    "ZAxisFilterQueueNode",
+    "ResonantSpinonZeroModeNode",
+    "DynamicInterCavityCouplerNode",
+    "RestlessCalibrationNode",
 ]
