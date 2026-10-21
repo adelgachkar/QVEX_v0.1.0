@@ -11,7 +11,6 @@ H0_LOCAL_DEFAULT = 73.04  # km/s/Mpc (SH0ES local ladder)
 MPC_IN_METERS = 3.085677581491367e22  # 1 Mpc in meters (SI)
 C_LIGHT_M_S = 299792458.0             # Speed of light in m/s
 
-
 @dataclass
 class PopcornVacuumConfig:
     node_id: str = "popcorn_vacuum_density"
@@ -20,7 +19,6 @@ class PopcornVacuumConfig:
     lambda_coh_kpc: float = 12.0
     vacuum_energy_density: float = 5.35e-10
     extra: Dict[str, Any] = field(default_factory=dict)
-
 
 class PopcornVacuumDensityNode(Node):
     type_name = "popcorn_vacuum_density"
