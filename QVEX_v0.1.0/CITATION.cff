@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "QVEX — Quantum Vacuum Exchange Engine"
+type: software
+version: 0.1.0
+date-released: 2026-10-23
+license: MIT
+repository-code: "https://github.com/adelgachkar/QVEX_v0.1.0"
+url: "https://github.com/adelgachkar/QVEX_v0.1.0"
+abstract: >-
+  QVEX (Quantum Vacuum Exchange Engine) is a modular, DAG-based research
+  scaffold for coupled optical/photonic cavity simulations, dynamic
+  inter-cavity coupling, boundary stress integration, and geometric curvature
+  proxies. It provides a deterministic pure-Python graph execution engine,
+  registered physics node types, JSON-defined pipelines, and a pytest suite.
+  Preliminary/schematic research scaffold; physical mappings are
+  phenomenological and require observational fitting before any scientific
+  claim.
+authors:
+  - family-names: Gachkar
+    given-names: Adel
+    affiliation: "Islamic Azad University, Urmia"
+    orcid: "https://orcid.org/0009-0006-7713-6004"
+    email: adelgachkar@gmail.com
+keywords:
+  - photonics
+  - cavity-optomechanics
+  - dag-pipeline
+  - quantum-simulation
+  - vacuum-physics

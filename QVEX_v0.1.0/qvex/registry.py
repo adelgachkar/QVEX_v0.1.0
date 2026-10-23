@@ -3,11 +3,12 @@ Node Registry for QVEX architecture.
 Manages node registration, instantiation, and discovery.
 """
 
+from __future__ import annotations
+
 import json
 from pathlib import Path
 from typing import Dict, Type, Any, Optional, Union
 import numpy as np
-from qvex.nodes.base import Node
 from qvex.core import Graph
 
 _NODE_REGISTRY: Dict[str, Type[Node]] = {}
@@ -248,6 +249,12 @@ def save_graph_to_json(graph: Graph, file_path: Union[str, Path]) -> None:
         json.dump(data, f, indent=2)
 
 
+# Imported here — after ``register_node`` is defined — so that importing this
+# module first no longer fails: ``qvex.nodes.__init__`` pulls in node modules
+# that do ``from qvex.registry import register_node`` while this module is
+# still executing (the historical circular-import defect).
+from qvex.nodes.base import Node  # noqa: E402  (placement intentional)
+
 # =====================================================================
 # Registration of the 12 Standard Nodes
 # =====================================================================
@@ -342,24 +349,31 @@ except ImportError:
         register_node("tetrahedral_cluster")(TetrahedralClusterNode)
 
 # 12. Five Tetrahedral Union
+# The canonical implementation lives in ``qvex.nodes.tetrahedral_cluster``
+# (next to TetrahedralClusterNode); older module names are kept as fallbacks
+# so historical imports keep working.  The final stub is a last resort only.
 try:
-    from qvex.nodes.five_tetrahedral_union import FiveTetrahedralUnionNode
+    from qvex.nodes.tetrahedral_cluster import FiveTetrahedralUnionNode
     register_node("five_tetrahedral_union")(FiveTetrahedralUnionNode)
 except ImportError:
     try:
-        from qvex.nodes.tetrahedral import FiveTetrahedralUnionNode
+        from qvex.nodes.five_tetrahedral_union import FiveTetrahedralUnionNode
         register_node("five_tetrahedral_union")(FiveTetrahedralUnionNode)
     except ImportError:
         try:
-            from qvex.nodes.tetrahedral_union import FiveTetrahedralUnionNode
+            from qvex.nodes.tetrahedral import FiveTetrahedralUnionNode
             register_node("five_tetrahedral_union")(FiveTetrahedralUnionNode)
         except ImportError:
-            class FiveTetrahedralUnionNode(Node):
-                NODE_TYPE = "five_tetrahedral_union"
-                def __init__(self, node_id="five_tetrahedral_union", name=None, **kwargs):
-                    nid = name or node_id
-                    super().__init__(node_id=nid, **kwargs)
-                    self.name = nid
-                def compute(self, inputs):
-                    return {"out": inputs}
-            register_node("five_tetrahedral_union")(FiveTetrahedralUnionNode)
+            try:
+                from qvex.nodes.tetrahedral_union import FiveTetrahedralUnionNode
+                register_node("five_tetrahedral_union")(FiveTetrahedralUnionNode)
+            except ImportError:
+                class FiveTetrahedralUnionNode(Node):
+                    NODE_TYPE = "five_tetrahedral_union"
+                    def __init__(self, node_id="five_tetrahedral_union", name=None, **kwargs):
+                        nid = name or node_id
+                        super().__init__(node_id=nid, **kwargs)
+                        self.name = nid
+                    def compute(self, inputs):
+                        return {"out": inputs}
+                register_node("five_tetrahedral_union")(FiveTetrahedralUnionNode)
