@@ -1,5 +1,3 @@
-<div align="center">
-
 # QVEX — Quantum Vacuum Exchange Engine
 
 **A modular, DAG-based research scaffold for coupled-cavity photonics,
@@ -10,8 +8,6 @@ geometric stress integration, and hypothesis-driven gravity modeling.**
 ![64 tests](https://img.shields.io/badge/tests-64%20passed-brightgreen.svg)
 ![Version](https://img.shields.io/badge/version-0.1.0-orange.svg)
 [![Citation](https://img.shields.io/badge/citation-CITATION.cff-purple.svg)](CITATION.cff)
-
-</div>
 
 ---
 
@@ -51,17 +47,15 @@ It is built for researchers who want to:
 
 ## Node Catalog
 
-```
-PHOTONICS            QUANTUM GEOMETRY        MECHANICS & GRAVITY       OBSERVATION
-─────────────────    ───────────────────     ────────────────────      ───────────────────
-cavity_resonator     berry_torque_bridge     boundary_stress_integrator  observational_coupling
-non_markovian_cavity quantum_backreaction    effective_metric_source     laboratory_benchmarks
-dynamic_inter_       optical_phase_step      gravitational_curvature     restless_calibration
-  cavity_coupler     resonant_spinon_        tetrahedral_cluster /
-peristaltic_pump        zero_mode              five_tetrahedral_union
-radial_propagation                          tetrahedral_relaxation
-z_axis_filter_queue                         popcorn_vacuum_density
-```
+| Photonics | Quantum Geometry | Mechanics & Gravity | Observation |
+| :--- | :--- | :--- | :--- |
+| `cavity_resonator` | `berry_torque_bridge` | `boundary_stress_integrator` | `observational_coupling` |
+| `non_markovian_cavity` | `quantum_backreaction` | `effective_metric_source` | `laboratory_benchmarks` |
+| `dynamic_inter_cavity_coupler` | `optical_phase_step` | `gravitational_curvature` | `restless_calibration` |
+| `peristaltic_pump` | `resonant_spinon_zero_mode` | `tetrahedral_cluster` / `five_tetrahedral_union` | — |
+| `radial_propagation` | — | `tetrahedral_relaxation` | — |
+| `z_axis_filter_queue` | — | `popcorn_vacuum_density` | — |
+
 
 ## Quick Start
 
@@ -119,7 +113,7 @@ photonic-crystal nanobeam design rules, and the popcorn-vacuum technical report.
 
 ## Project Layout
 
-```
+```text
 qvex/
 ├── core/        # DAG engine (graph.py) and node registry (registry.py)
 ├── nodes/       # 20 physics nodes, one module per pipeline stage
@@ -136,7 +130,7 @@ If QVEX contributes to your work, please cite it using the metadata in
 [`CITATION.cff`](CITATION.cff):
 
 > Gachkar, A. (2026). *QVEX — Quantum Vacuum Exchange Engine* (Version 0.1.0) [Software].
-> https://github.com/adelgachkar/QVEX_v0.1.0
+> [https://github.com/adelgachkar/QVEX_v0.1.0]
 
 ## Status & Honest Scope
 
