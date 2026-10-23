@@ -3,12 +3,12 @@ import sys
 import os
 from unittest.mock import MagicMock
 
-# اطمینان از قرار گرفتن ریشه پروژه در sys.path
+# Ensure the project root is on sys.path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-# فال‌بک خودکار برای networkx در محیط آفلاین
+# Automatic networkx fallback for offline environments
 try:
     import networkx
 except ImportError:

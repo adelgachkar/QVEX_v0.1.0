@@ -13,12 +13,12 @@ logger = logging.getLogger(__name__)
 __version__ = "0.1.0"
 __author__ = "Adel Gachkar"
 
-# صادر کردن اجزای گراف و محاسبات هسته
+# Export the core graph and computation components
 try:
     from .graph import Graph, ComputationalGraph
     __all__ = ["Graph", "ComputationalGraph"]
 except ImportError as e:
-    # در صورتی که فایل graph به صورت مجزا صدا زده شود
+    # Fallback when the graph module is imported stand-alone
     try:
         from core.graph import Graph, ComputationalGraph
         __all__ = ["Graph", "ComputationalGraph"]

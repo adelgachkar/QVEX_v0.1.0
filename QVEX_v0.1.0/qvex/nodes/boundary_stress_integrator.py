@@ -75,12 +75,12 @@ class BoundaryStressIntegratorNode(Node):
         ]
 
     def compute(self, inputs: Dict[str, Any]) -> Dict[str, Any]:
-        # 1. دریافت پارامترهای اپتیکی در صورت حضور
+        # 1. Read optical parameters when present
         field_amp = float(inputs.get("field_amplitude", 0.0))
         cavity_len = float(inputs.get("cavity_length", 1.0))
         boundary_refl = float(inputs.get("boundary_reflectivity", inputs.get("reflection_factor", 1.0)))
 
-        # 2. تعیین توان تشعشعی (P_jet)
+        # 2. Determine the radiated power (P_jet)
         if "jet_power" in inputs:
             jet_power = float(inputs.get("jet_power", 0.0))
         elif field_amp > 0.0:
@@ -93,25 +93,25 @@ class BoundaryStressIntegratorNode(Node):
         if noise_floor <= 0.0:
             noise_floor = 1e-12
 
-        # 3. فرمولاسیون فیزیکی: F_jet = (1 + R) * P_jet / c
-        # برای تست‌های نرم‌افزاری c_coupling=1.0 و gain=1.0 مقیاس طبیعی را حفظ می‌کند
+        # 3. Physical formulation: F_jet = (1 + R) * P_jet / c
+        # For software tests, c_coupling=1.0 and gain=1.0 preserve the natural scale
         c_coupling = float(inputs.get("c_coupling", 1.0))
         if c_coupling <= 0.0:
             c_coupling = 1.0
         coupling_gain = float(inputs.get("coupling_gain", 1.0))
         f_effective = (jet_power * coupling_gain) / c_coupling
 
-        # 4. محاسبه نسبت سیگنال به نویز (SNR)
+        # 4. Compute the signal-to-noise ratio (SNR)
         snr = f_effective / noise_floor
 
-        # 5. تطبیق رژیم‌ها با تعاریف آزمون‌های Phase 3
-        # در آزمون‌ها: jet_power > noise_floor یعنی snr > 1.0 رژیم نیوتنی است
+        # 5. Match regimes to the Phase-3 test definitions
+        # In the tests: jet_power > noise_floor means snr > 1.0, i.e. the newtonian regime
         if snr > 1.0:
             regime = "newtonian"
         else:
             regime = "sub-noise"
 
-        # 6. محاسبه تراست خالص و تانسور تنش
+        # 6. Compute net thrust and the stress tensor
         if f_effective <= noise_floor:
             net_thrust = 0.0
             t_00 = 0.0
@@ -121,10 +121,10 @@ class BoundaryStressIntegratorNode(Node):
             t_00 = f_effective + noise_floor
             t_zz = net_thrust
 
-        # تانسور تنش به صورت بردار چهارعنصری (برای تست‌های assertion طول ۴)
+        # Stress tensor as a 4-element vector (for length-4 assertion tests)
         stress_tensor_1d = [t_00, 0.0, 0.0, t_zz]
 
-        # ماتریس تانسور تنش 4x4 (جهت سازگاری با ردیابی قطری trace_t[i][i] در گرانش و DAG)
+        # 4x4 stress-tensor matrix (for diagonal trace_t[i][i] compatibility in gravity and DAG)
         stress_tensor_2d = [
             [t_00, 0.0, 0.0, 0.0],
             [0.0, 0.0, 0.0, 0.0],
@@ -132,14 +132,14 @@ class BoundaryStressIntegratorNode(Node):
             [0.0, 0.0, 0.0, t_zz],
         ]
 
-        # محاسبه فشار تشعشعی و نیروی مرزی برای تست‌های اپتومکانیک
+        # Compute radiation pressure and boundary force for the optomechanics tests
         rad_pressure = (1.0 + boundary_refl) * (field_amp ** 2 if field_amp > 0.0 else jet_power)
         boundary_force = max(0.0, net_thrust if jet_power > 0.0 else rad_pressure)
 
         return {
             "net_thrust": net_thrust,
             "net_thrust_n": net_thrust,
-            # ارائه ماتریس دوبعدی برای حل TypeError و بردار برای سازگاری تک‌بعدی
+            # Provide the 2-D matrix to avoid TypeError, and the vector for 1-D compatibility
             "stress_tensor": stress_tensor_2d,
             "boundary_stress_tensor": stress_tensor_1d,
             "stress_tensor_4x4": stress_tensor_2d,
@@ -151,5 +151,5 @@ class BoundaryStressIntegratorNode(Node):
             "boundary_force": boundary_force,
         }
 
-    # پل اجرای فراخوانی برای تست‌هایی که متد process را فراخوانی می‌کنند
+    # Execution bridge for tests that call the process() method
     process = compute

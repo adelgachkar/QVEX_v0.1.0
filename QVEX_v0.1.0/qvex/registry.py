@@ -44,7 +44,7 @@ def create_node(node_type: str, *args, **kwargs) -> Node:
             f"Available types: {list(_NODE_REGISTRY.keys())}"
         )
 
-    # همگام‌سازی name و node_id
+    # Synchronize "name" and "node_id"
     given_name = kwargs.get("name")
     if "name" in kwargs and "node_id" not in kwargs:
         kwargs["node_id"] = kwargs.pop("name")
@@ -52,7 +52,7 @@ def create_node(node_type: str, *args, **kwargs) -> Node:
     cls = _NODE_REGISTRY[node_type]
     instance = cls(*args, **kwargs)
 
-    # اطمینان از اینکه شیء هم node_id دارد و هم ویژگی name
+    # Ensure the instance carries both node_id and a "name" attribute
     target_name = given_name or getattr(instance, "node_id", node_type)
     setattr(instance, "name", target_name)
     if not hasattr(instance, "node_id"):
@@ -82,7 +82,7 @@ def load_graph_from_dict(data: Dict[str, Any]) -> Graph:
     """
     graph = Graph()
 
-    # خواندن نودها (پشتیبانی از ساختار List یا Dictionary)
+    # Read nodes (supports both List and Dictionary layouts)
     raw_nodes = data.get("nodes", [])
     if isinstance(raw_nodes, dict):
         nodes_list = []
@@ -101,13 +101,13 @@ def load_graph_from_dict(data: Dict[str, Any]) -> Graph:
 
         node_instance = create_node(node_type, node_id=node_id, label=label, config=config)
 
-        # لایه انطباق هوشمند ورودی و خروجی‌ها برای سازگاری کامل پایپ‌لاین
+        # Smart input/output adaptation layer for full pipeline compatibility
         orig_execute = getattr(node_instance, "execute", None)
         orig_compute = getattr(node_instance, "compute", None)
 
         def make_wrapper(orig_fn, n_type):
             def wrapped(inputs: Dict[str, Any]) -> Dict[str, Any]:
-                # انطباق ورودی نود متریک: تبدیل بردار یک‌بعدی تانسور ضربه-انرژی به ماتریس قطری ۴ در ۴
+                # Metric-node input adaptation: convert the 1-D stress-energy vector into a 4x4 diagonal matrix
                 if n_type == "effective_metric_source" and isinstance(inputs, dict):
                     st = inputs.get("stress_tensor_4x4")
                     if isinstance(st, (list, tuple, np.ndarray)):
@@ -123,7 +123,7 @@ def load_graph_from_dict(data: Dict[str, Any]) -> Graph:
                 else:
                     out = dict(out)
 
-                # 1. تطبیق خروجی نود cavity_resonator
+                # 1. Adapt cavity_resonator output
                 if n_type == "cavity_resonator" and "cavity_intensity" not in out:
                     val = out.get("screened_phase", out.get("phase_frequency", 1.0))
                     try:
@@ -131,7 +131,7 @@ def load_graph_from_dict(data: Dict[str, Any]) -> Graph:
                     except Exception:
                         out["cavity_intensity"] = 1.0
 
-                # 2. تطبیق خروجی نود peristaltic_pump
+                # 2. Adapt peristaltic_pump output
                 if n_type == "peristaltic_pump" and "pump_thrust" not in out:
                     val = out.get("net_transport", out.get("accumulated_phase", 1.0))
                     try:
@@ -139,7 +139,7 @@ def load_graph_from_dict(data: Dict[str, Any]) -> Graph:
                     except Exception:
                         out["pump_thrust"] = 1.0
 
-                # 3. تطبیق خروجی نود berry_torque_bridge
+                # 3. Adapt berry_torque_bridge output
                 if n_type == "berry_torque_bridge" and "berry_torque" not in out:
                     val = out.get("geometric_torque", out.get("torque", 1.0))
                     try:
@@ -147,7 +147,7 @@ def load_graph_from_dict(data: Dict[str, Any]) -> Graph:
                     except Exception:
                         out["berry_torque"] = 1.0
 
-                # 4. تطبیق خروجی نود boundary_stress_integrator به ماتریس ۴ در ۴ دوبعدی
+                # 4. Adapt boundary_stress_integrator output to a 4x4 matrix
                 if n_type == "boundary_stress_integrator":
                     st = out.get("stress_tensor")
                     if st is not None:
@@ -164,7 +164,7 @@ def load_graph_from_dict(data: Dict[str, Any]) -> Graph:
                     elif "stress_tensor_4x4" not in out:
                         out["stress_tensor_4x4"] = np.eye(4).tolist()
 
-                # 5. تطبیق خروجی نود effective_metric_source برای کلید effective_metric_perturbation
+                # 5. Adapt effective_metric_source output for the effective_metric_perturbation key
                 if n_type == "effective_metric_source" and "effective_metric_perturbation" not in out:
                     out["effective_metric_perturbation"] = out.get("metric_g_mu_nu", np.eye(4).tolist())
 
@@ -178,7 +178,7 @@ def load_graph_from_dict(data: Dict[str, Any]) -> Graph:
 
         graph.add_node(node_instance)
 
-    # خواندن یال‌ها
+    # Read edges
     edges_data = data.get("edges", data.get("connections", []))
     for e_data in edges_data:
         source = e_data.get("source") or e_data.get("from_node") or e_data.get("src")

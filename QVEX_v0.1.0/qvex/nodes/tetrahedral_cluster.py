@@ -1,6 +1,6 @@
 """
-tetrahedral_cluster.py - نودهای هم‌جوشی تتراهدرال و ابرساختار اتحاد ۵ سلول (Five-Tetrahedral Union)
-طراحی شده برای فریم‌ورک QVEX_Scaffold
+tetrahedral_cluster.py - Tetrahedral fusion nodes and the Five-Tetrahedral Union superstructure
+designed for the QVEX_Scaffold framework
 """
 
 from __future__ import annotations
@@ -16,14 +16,15 @@ except ImportError:
 
 class TetrahedralClusterNode(BaseNode):
     """
-    نود هم‌جوشی تتراهدرال (T_d symmetry):
-    محاسبه تداخل و برآیند فازورهای ۴ کاواک متقارن، شاخص همدوسی و انحراف فاز.
+    Tetrahedral fusion node (T_d symmetry):
+    Computes the interference and resultant of 4 symmetric-cavity phasors,
+    the coherence index, and the phase deviation.
     """
 
     def __init__(self, node_id: str, label: str | None = None, config: Dict[str, Any] | None = None):
         super().__init__(node_id=node_id, label=label, config=config)
         self.coupling_strength = float(self.config.get("coupling_strength", 0.25))
-        # زاویه مشخصه چهاروجهی منتظم: arccos(-1/3) ~ 109.471 deg
+        # Characteristic angle of a regular tetrahedron: arccos(-1/3) ~ 109.471 deg
         self.characteristic_angle_rad = math.acos(-1.0 / 3.0)
 
     @property
@@ -54,14 +55,14 @@ class TetrahedralClusterNode(BaseNode):
         amplitudes = inputs.get("amplitudes", [1.0] * n_cells)
         amp_arr = np.array(amplitudes, dtype=np.float64)
 
-        # برهم‌نهی فازوری مدهای الکترومغناطیسی هسته
+        # Phasor interference of the core electromagnetic modes
         phasors = amp_arr * np.exp(1j * phases_arr)
         fused_field = np.sum(phasors) * self.coupling_strength
 
         core_amp = float(np.abs(fused_field))
         core_phase = float(np.angle(fused_field))
 
-        # شاخص همدوسی کوانتومی (میزان سازندگی تداخل نسبت به سقف نظری)
+        # Quantum coherence index (interference productivity relative to the theoretical ceiling)
         max_possible_amp = np.sum(amp_arr) * self.coupling_strength
         coherence = float(core_amp / max_possible_amp) if max_possible_amp > 1e-12 else 0.0
 
@@ -79,12 +80,12 @@ class TetrahedralClusterNode(BaseNode):
 
 class FiveTetrahedralUnionNode(BaseNode):
     """
-    ابرساختار اتحاد ۵ سلول تتراهدرال (Five-Tetrahedral Union):
-    اتصال ۵ چهاروجهی حول یال مشترک دارای نقص زاویه‌ای بسته شدن هندسی است:
-    360 - 5 * arccos(1/3) = 7.3561 deg (~0.128388 rad)
+    Five-Tetrahedral Union superstructure:
+    Joining 5 tetrahedra around a shared edge leaves a geometric closing gap
+    of 360 - 5 * arccos(1/3) = 7.3561 deg (~0.128388 rad)
     """
 
-    # نقص زاویه‌ای فضایی بر حسب رادیان
+    # Spatial angular deficit in radians
     GEOMETRIC_GAP_RAD: float = math.radians(360.0 - (5.0 * math.degrees(math.acos(1.0 / 3.0))))
 
     def __init__(self, node_id: str, label: str | None = None, config: Dict[str, Any] | None = None):
@@ -113,7 +114,7 @@ class FiveTetrahedralUnionNode(BaseNode):
 
         phases_arr = np.array(cell_phases, dtype=np.float64)
 
-        # اعمال شیفت تصحیح کسری زاویه‌ای به ازای هر سلول (Phase Frustration Relaxation)
+        # Apply the fractional angular-correction shift per cell (phase-frustration relaxation)
         gap_correction_step = self.GEOMETRIC_GAP_RAD / 5.0
         adjusted_phases = phases_arr + np.array([i * gap_correction_step for i in range(5)])
 

@@ -7,7 +7,7 @@ from qvex.nodes.boundary_stress_integrator import BoundaryStressIntegratorNode
 
 
 def test_qvex_pipeline_flow():
-    # 1. مقداردهی نود کاواک
+    # 1. Initialize the cavity node
     cavity = CavityResonatorNode(node_id="cavity_01")
     cavity_out = cavity.execute({
         "bare_phase": 146.82,
@@ -17,7 +17,7 @@ def test_qvex_pipeline_flow():
     assert "screened_phase" in cavity_out
     assert cavity_out["calibration_status"] == "scaffold_only"
 
-    # 2. نود پل گشتاور و فاز بری
+    # 2. Berry torque & phase bridge node
     berry = BerryTorqueBridgeNode(node_id="berry_01")
     berry_out = berry.execute({
         "screened_phase": cavity_out["screened_phase"],
@@ -27,7 +27,7 @@ def test_qvex_pipeline_flow():
     assert "berry_phase_shift" in berry_out
     assert "torque_correction" in berry_out
 
-    # 3. نود پمپ پریستالتیک فاز
+    # 3. Peristaltic phase pump node
     pump = PeristalticPumpNode(node_id="pump_01")
     pump_out = pump.execute({
         "drive_amplitude": 1.0,
@@ -37,7 +37,7 @@ def test_qvex_pipeline_flow():
     assert pump_out["jet_power"] > 0
     assert len(pump_out["phase_flux_vector"]) == 3
 
-    # 4. نود ادغام تنش مرزی
+    # 4. Boundary stress integration node
     stress = BoundaryStressIntegratorNode(node_id="stress_01")
     stress_out = stress.execute({
         "jet_power": pump_out["jet_power"],

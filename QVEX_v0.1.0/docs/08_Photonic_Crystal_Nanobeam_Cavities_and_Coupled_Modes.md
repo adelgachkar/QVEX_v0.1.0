@@ -1,54 +1,54 @@
 # 08. Photonic-Crystal Nanobeam Cavities and Coupled Modes Analysis
 
-## 1. مرجع و فراداده سند (Bibliographic Metadata)
-- **منبع اصلی:** *Single and Coupled Nanobeam Cavities* (Chapter 2, *Advances in Photonic Crystals*)
-- **نویسندگان:** Aliaksandra M. Ivinskaya, Andrei V. Lavrinenko, Dzmitry M. Shyroki, and Andrey A. Sukhorukov
-- **شناسه دیجیتال:** DOI: 10.5772/55096
-- **وضعیت اعتبارسنجی:** تایید کامل (Electromagnetic Eigenmode Analysis & Maxwell-based Photonics)
+## 1. Bibliographic Metadata
+- **Primary source:** *Single and Coupled Nanobeam Cavities* (Chapter 2, *Advances in Photonic Crystals*)
+- **Authors:** Aliaksandra M. Ivinskaya, Andrei V. Lavrinenko, Dzmitry M. Shyroki, and Andrey A. Sukhorukov
+- **Digital identifier:** DOI: 10.5772/55096
+- **Validation status:** Fully validated (Electromagnetic Eigenmode Analysis & Maxwell-based Photonics)
 
 ---
 
-## 2. هدف و انطباق با پروژه QVEX
-هدف از این مستند، انتقال مبانی فیزیکی کاواک‌های نوری با ضریب کیفیت بسیار بالا ($Q \sim 10^5$) و تحلیل برهم‌نهی مدهای جفت‌شده (Hybridized Modes) به چارچوب شبیه‌سازی `QVEX_v0.1.0` است. این مفاهیم جایگزین فرضیات پارامتریک در گره‌های زیر می‌شوند:
-1. `CavityResonatorNode`: تعیین نرخ واقعی اتلاف میدان ($\kappa$) و کیفیت مد بر اساس هندسه فیزیکی سوراخ‌ها و عرض تیر.
-2. `PeristalticPumpNode`: مدل‌سازی ماتریس انتقال توان بین دو کاواک جفت‌شده بر اساس پدیده شکافت بسامد (Frequency Splitting).
+## 2. Purpose and Mapping to the QVEX Project
+This document transfers the physics of very-high-Q optical cavities ($Q \sim 10^5$) and hybridized coupled-mode analysis into the `QVEX_v0.1.0` simulation framework. These concepts replace the parametric placeholders in the following nodes:
+1. `CavityResonatorNode`: determines the true field-loss rate ($\kappa$) and mode quality from the physical hole geometry and beam width.
+2. `PeristalticPumpNode`: models the power-transfer matrix between two coupled cavities based on frequency splitting.
 
 ---
 
-## 3. فرمول‌بندی‌های محوری و پایه‌های الکترومغناطیسی
+## 3. Core Formulations and Electromagnetic Foundations
 
-### ۳.۱. ضریب کیفیت مختلط (Complex Frequency and Q-factor)
-تحلیل مدهای ویژه الکترومغناطیسی با حل مستقیم معادلات ماکسول منجر به استخراج فرکانس ویژه مختلط $\tilde{\omega} = \omega_r + i\omega_i$ می‌شود. ضریب کیفیت ذاتی کاواک به‌صورت زیر تعریف می‌گردد:
+### 3.1. Complex Frequency and Q-factor
+Solving Maxwell's equations directly for the electromagnetic eigenmodes yields the complex eigenfrequency $\tilde{\omega} = \omega_r + i\omega_i$. The intrinsic cavity quality factor is then defined as:
 $$Q = \frac{\text{Re}(\omega)}{2\,\text{Im}(\omega)} = \frac{\omega_r}{2\gamma}$$
-که در آن $\gamma = \text{Im}(\omega)$ نرخ اتلاف نوری به محیط بی‌نهایت (Radiation Loss) است و رابطه مستقیمی با پارامتر میرایی لینبلاد ($\kappa = 2\gamma = \frac{\omega_r}{Q}$) در گره `CavityResonatorNode` دارد.
+where $\gamma = \text{Im}(\omega)$ is the radiation-loss rate into the unbounded medium, directly related to the Lindblad damping parameter ($\kappa = 2\gamma = \frac{\omega_r}{Q}$) used by the `CavityResonatorNode`.
 
-### ۳.۲. جفت‌شدگی کاواک‌های موازی و مدهای برهم‌نهاده (Hybridized Supermodes)
-هنگامی که دو نانوتیر با فاصله $g$ در کنار یکدیگر قرار می‌گیرند، تقارن میدان الکتریکی شکسته شده و دو سوپرمُد تشکیل می‌شود:
-- **مد زوج (Even Mode / Symmetric):** میدان الکتریکی در شکاف بین دو تیر هم‌فاز است ($\omega_{\text{even}}$).
-- **مد فرد (Odd Mode / Anti-symmetric):** میدان الکتریکی بین دو تیر دارای اختلاف فاز $\pi$ است ($\omega_{\text{odd}}$).
+### 3.2. Coupling of Parallel Cavities and Hybridized Supermodes
+When two nanobeams are placed side by side with gap $g$, the electric-field symmetry is broken and two supermodes form:
+- **Even mode (symmetric):** the electric field in the gap between the two beams is in phase ($\omega_{\text{even}}$).
+- **Odd mode (anti-symmetric):** the electric field between the two beams has a phase difference of $\pi$ ($\omega_{\text{odd}}$).
 
-شکافت فرکانسی (Frequency Splitting) ناشی از نرخ جفت‌شدگی متقابل $J$ است:
+The frequency splitting is set by the mutual coupling rate $J$:
 $$\Delta\omega = \omega_{\text{odd}} - \omega_{\text{even}} \approx 2J$$
-این ضریب $J$ دقیقاً ضریب تزویج فضایی بین المان‌های پمپ پریستالتیک در پروژه است.
+This coefficient $J$ is exactly the spatial coupling coefficient between the peristaltic-pump elements of this project.
 
-### ۳.۳. تباهیدگی مدهای نوری با جابه‌جایی طولی (Longitudinal Shift Degeneracy)
-با اعمال جابه‌جایی طولی $s$ بین دو نانوتیر موازی، وابستگی مکانی جفت‌شدگی تغییر می‌کند:
-- در جابه‌جایی بحرانی $s \approx 0.4a$ (که $a$ ثابت شبکه دوره تناوب سوراخ‌هاست)، شکافت فرکانسی به صفر میل کرده ($\Delta\omega \to 0$) و پدیده **تباهیدگی مدهای تشدیدگر (Mode Degeneracy)** مشاهده می‌شود.
-- در این نقطه تباهیدگی، ضریب کیفیت مدها ($Q$) دچار افت ناگهانی نمی‌شود و امکان فشرده‌سازی و انتقال بهینه انرژی بدون تلفات تشدیدی فراهم می‌گردد.
+### 3.3. Longitudinal-Shift Mode Degeneracy
+Applying a longitudinal shift $s$ between two parallel nanobeams changes the spatial dependence of the coupling:
+- At the critical shift $s \approx 0.4a$ (with $a$ the hole-lattice constant), the frequency splitting tends to zero ($\Delta\omega \to 0$) and **resonant-mode degeneracy** is observed.
+- At this degeneracy point the modal $Q$ factors do not drop abruptly, enabling compact, loss-free resonant energy transfer.
 
 ---
 
-## 4. پارامترهای هندسی پیشنهادی برای پیاده‌سازی و کالیبراسیون
+## 4. Proposed Geometric Parameters for Implementation and Calibration
 
-| پارامتر | نماد فیزیکی | بازه استاندارد سیلیکونی (SOI) | اثر در گره شبیه‌سازی |
+| Parameter | Physical symbol | Standard SOI range | Effect on the simulation node |
 | :--- | :--- | :--- | :--- |
-| **ثابت شبکه** | $a$ | $300\text{ nm} - 450\text{ nm}$ | تعیین فرکانس مرکزی تشدید $\omega_0$ |
-| **شعاع سوراخ‌ها** | $r$ | $0.25a - 0.35a$ | تعیین پهنای باند فوتونی (Bandgap) |
-| **عرض تیر** | $w$ | $1.0a - 1.5a$ | کنترل حجم مد $V_{\text{mode}}$ |
-| **ضریب کیفیت** | $Q$ | $10^4 - 10^5$ | تنظیم پارامتر `decay_rate` در `CavityResonatorNode` |
-| **فاصله دو نانوتیر** | $g$ | $100\text{ nm} - 300\text{ nm}$ | تنظیم پارامتر `coupling_strength` در `PeristalticPumpNode` |
+| **Lattice constant** | $a$ | $300\text{ nm} - 450\text{ nm}$ | Sets the central resonance frequency $\omega_0$ |
+| **Hole radius** | $r$ | $0.25a - 0.35a$ | Sets the photonic bandgap width |
+| **Beam width** | $w$ | $1.0a - 1.5a$ | Controls the mode volume $V_{\text{mode}}$ |
+| **Quality factor** | $Q$ | $10^4 - 10^5$ | Sets the `decay_rate` parameter of `CavityResonatorNode` |
+| **Nanobeam gap** | $g$ | $100\text{ nm} - 300\text{ nm}$ | Sets the `coupling_strength` parameter of `PeristalticPumpNode` |
 
 ---
 
-## 5. ملاحظات تفکیک نظری و مرزهای علمی
-1. **طبیعت کلاسیک مدهای ماکسول:** پدیده‌های تحلیل‌شده در این مرجع، حل‌های حالت ماندگار معادلات کلاسیک ماکسول در ساخت
+## 5. Theoretical Scope and Scientific Boundaries
+1. **Classical nature of the Maxwell modes:** the phenomena analyzed in this reference are steady-state solutions of the classical Maxwell equations in photonic-crystal nanostructures; they enter QVEX as classical analog parameterizations, not as evidence for quantum-vacuum effects.

@@ -1,6 +1,6 @@
 """
-test_tetrahedral_pipeline_e2e.py - آزمون جریان داده انتها-به-انتها (E2E)
-اتصال ابرساختار تتراهدرال 5-سلولی به RadialPropagationNode و ZAxisFilterQueueNode
+test_tetrahedral_pipeline_e2e.py - End-to-End (E2E) data-flow test
+connecting the 5-cell tetrahedral superstructure to RadialPropagationNode and ZAxisFilterQueueNode
 """
 
 from __future__ import annotations
@@ -16,10 +16,10 @@ from qvex.nodes.z_axis_filter_queue import ZAxisFilterQueueNode
 
 def test_tetrahedral_to_radial_and_z_filter_e2e():
     """
-    تست زنجیره کامل:
-    5 کاواک تشدیدگر -> اتحاد 5-تتراهدرال -> انتشار شعاعی -> فیلتر پالس محور Z
+    Full-chain test:
+    5 resonant cavities -> 5-tetrahedral union -> radial propagation -> Z-axis pulse filter
     """
-    # 1. پنج کاواک تشدیدگر
+    # 1. Five resonant cavities
     resonator = CavityResonatorNode(node_id="cav_unit", config={"leakage_ratio": 0.05})
     cell_phases = []
     for i in range(1, 6):
@@ -28,14 +28,14 @@ def test_tetrahedral_to_radial_and_z_filter_e2e():
 
     assert len(cell_phases) == 5
 
-    # 2. اتحاد 5-تتراهدرال
+    # 2. Five-tetrahedral union
     union_node = FiveTetrahedralUnionNode(node_id="union_5cell", config={"coupling_efficiency": 0.96})
     union_out = union_node.execute({"cell_phases": cell_phases})
 
     assert union_out["cells_unified"] == 5
     assert union_out["union_amplitude"] > 0.0
 
-    # 3. انتشار شعاعی موج برآمده از هسته تتراهدرال
+    # 3. Radial propagation of the wave emerging from the tetrahedral core
     radial_node = RadialPropagationNode(
         node_id="radial_prop",
         delta_r=0.25,
@@ -54,7 +54,7 @@ def test_tetrahedral_to_radial_and_z_filter_e2e():
     assert propagated_pkt["radial_propagated"] is True
     assert propagated_pkt["r"] > 1.0
 
-    # 4. فیلتر صف محور Z بر اساس شدت میدان عبوری و فاز نهایی
+    # 4. Z-axis queue filter based on the transmitted field intensity and final phase
     z_filter = ZAxisFilterQueueNode(
         node_id="z_filter_final",
         config={"queue_capacity": 4},
@@ -74,7 +74,7 @@ def test_tetrahedral_to_radial_and_z_filter_e2e():
 
 
 def test_tetrahedral_e2e_coherence_under_frustration():
-    """بررسی رفتار تنش ناکامی هندسی در شرایط فازهای آشفته."""
+    """Check geometric frustration-stress behavior under dispersed phases."""
     union_node = FiveTetrahedralUnionNode(node_id="union_stress_check")
 
     out_balanced = union_node.execute({"cell_phases": [0.1, 0.1, 0.1, 0.1, 0.1]})
