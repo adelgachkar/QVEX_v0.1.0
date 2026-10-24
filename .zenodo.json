@@ -1,0 +1,27 @@
+{
+  "title": "QVEX — Quantum Vacuum Exchange Engine",
+  "upload_type": "software",
+  "version": "0.1.0",
+  "publication_date": "2026-10-23",
+  "access_right": "open",
+  "license": "mit",
+  "language": "eng",
+  "description": "<p><b>QVEX (Quantum Vacuum Exchange Engine)</b> is a modular, DAG-based research scaffold for coupled optical/photonic cavity simulations, dynamic inter-cavity coupling, boundary stress integration, and geometric curvature proxies.</p><p>It provides a deterministic pure-Python graph execution engine, 20 registered physics node types, JSON-defined pipelines validated against a JSON schema, and a 64-test pytest suite with CI on Python 3.10-3.12.</p><p>Highlights: photonic cavity resonators and non-Markovian cavities, Berry-curvature and geometric-torque bridges, tetrahedral angular-deficit curvature, popcorn-vacuum nucleation modulation, and observational coupling against the SPARC rotation-curve dataset. Every node and document carries an explicit <i>epistemic class</i> (Class A established experiments through Class D frontier predictions).</p><p><b>Scope:</b> preliminary/schematic research scaffold - physical mappings are phenomenological and require observational fitting before any scientific claim.</p>",
+  "creators": [
+    {
+      "name": "Gachkar, Adel",
+      "affiliation": "Islamic Azad University, Urmia",
+      "orcid": "0009-0006-7713-6004"
+    }
+  ],
+  "keywords": [
+    "photonics",
+    "cavity-optomechanics",
+    "dag-pipeline",
+    "quantum-simulation",
+    "vacuum-physics",
+    "quantum-geometry",
+    "gravity-hypothesis",
+    "research-scaffold"
+  ]
+}
