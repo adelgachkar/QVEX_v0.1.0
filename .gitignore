@@ -10,3 +10,9 @@ outputs/plots/*.png
 *.zip
 *.tar.gz
 *.7z
+
+# Credentials must never be committed
+.zenodo_token*
+*.token
+.env
+.env.*
