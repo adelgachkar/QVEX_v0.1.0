@@ -7,6 +7,7 @@ name = "qvex"
 version = "0.1.0"
 description = "Quantum Vacuum Exchange Engine research scaffold"
 readme = "README.md"
+license = { text = "MIT" }
 requires-python = ">=3.10"
 dependencies = ["numpy"]
 

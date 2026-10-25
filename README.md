@@ -132,6 +132,12 @@ If QVEX contributes to your work, please cite it using the metadata in
 > Gachkar, A. (2026). *QVEX — Quantum Vacuum Exchange Engine* (Version 0.1.0) [Software].
 > [https://github.com/adelgachkar/QVEX_v0.1.0]
 
+## License
+
+MIT — see [`LICENSE`](LICENSE). The same license is declared in
+[`CITATION.cff`](CITATION.cff) and in the Zenodo deposit metadata
+(`.zenodo.json`).
+
 ## Status & Honest Scope
 
 QVEX is a **computational research scaffold, not a validated physical engine**. All
