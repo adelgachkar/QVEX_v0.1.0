@@ -9,6 +9,9 @@ tags: [QVEX, Verification, CodeReview, NGC6503]
 
 # Technical Review and Audit Report: QVEX-NGC6503 Independent Analysis
 
+> [!warning] Superseded
+> This v1 report is frozen against an earlier snapshot of the package (`4 passed`, `Git clean`, a zero-byte duplicate at `outputs/plots/…`). Findings 1–4 have since been resolved. The current state and the file ranking live in [[QVEX_NGC6503_Review_Report_v2]].
+
 **Document ID:** QVEX-REV-NGC6503-2026-V1  
 **Target Repository:** `QVEX-NGC6503-Quantum-Vacuum`  
 **Scope:** Verification of axiomatic nodes, analytical consistency, test execution status, and reproducibility.
